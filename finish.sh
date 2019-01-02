@@ -18,15 +18,17 @@ localectl set-locale LANG='en_US.UTF-8'
 # Set up swap partition if there is one
  echo -n 'Did you set up a swap partition?(y/n): '
  read SWAP
- if [ '$SWAP' = 'y'  ]
+ if [ "$SWAP" = "y"  ]
  then
+     echo 'Adding swap partition to fstab...' 
      SWAPPART=$(sudo blkid | grep swap | cut -d'/' -f3 | cut -d':' -f1)
      MYUUID=$(sudo blkid | grep swap | cut -d'"' -f2)
      echo >>/etc/fstab
-     echo >>"# /dev/$SWAPPART" >>/etc/fstab
-     echo "UUID=$MYUUID  none    swap    defaults    0 0" >>/etc/fstab
+     echo "# /dev/$SWAPPART" >>/etc/fstab
+     echo "UUID=$MYUUID  	none    	swap    	defaults    0 0" >>/etc/fstab
      swapon
  fi
+
 # Todo: Check if SSD 
 
 # Remove install scripts from root
