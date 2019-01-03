@@ -1,19 +1,20 @@
 #!/bin/bash
 #
 # This script should have been copied to your created user's home directory
-# Run with sudo
 # 
-# Reminder to reconnect to wireless
+# Reminder to run as root
 echo
-echo "RUN WITH SUDO"
+echo -n "RUN WITH SUDO. If you are running as sudo/root hit enter: "
 echo
-echo -n "Friendly reminder to reconnect to internet... Well have you?? There are packages inbound soldier! If you have already AND ARE RUNNING WITH SUDO OR ROOT hit enter."
 read CONTINUE
 echo
 echo
 
 # Set locale
+echo 'Setting locale...'
 localectl set-locale LANG='en_US.UTF-8'
+echo
+echo
 
 # Set up swap partition if there is one
  echo -n 'Did you set up a swap partition?(y/n): '
@@ -21,8 +22,10 @@ localectl set-locale LANG='en_US.UTF-8'
  if [ "$SWAP" = "y"  ]
  then
      echo 'Adding swap partition to fstab...' 
-     SWAPPART=$(sudo blkid | grep swap | cut -d'/' -f3 | cut -d':' -f1)
-     MYUUID=$(sudo blkid | grep swap | cut -d'"' -f2)
+     echo
+     SWAPPART=$(sudo fdisk -l | grep swap | cut -d'/' -f3 | cut -d' ' -f1)
+     mkswap /dev/$SWAPPART
+     MYUUID=$(sudo blkid | grep $SWAPPART | cut -d'"' -f2)
      echo >>/etc/fstab
      echo "# /dev/$SWAPPART" >>/etc/fstab
      echo "UUID=$MYUUID  	none    	swap    	defaults    0 0" >>/etc/fstab
@@ -34,5 +37,16 @@ localectl set-locale LANG='en_US.UTF-8'
 # Remove install scripts from root
 rm /chroot.sh /postinstall.sh
 
-# Finish
-echo "Install completed: You can delete finish.sh now"
+# Guide installation of video drivers
+echo
+echo
+echo
+echo "Your display devices: "
+lspci | grep VGA
+echo
+echo
+echo "Pacman xf86-video drivers: "
+pacman -Ss | grep xf86-video
+echo
+echo
+echo "Install correct video drivers, and you are done! Feel free to remove finish .sh"
