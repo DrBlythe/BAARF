@@ -2,7 +2,7 @@
 ## An automated Arch Linux install script
 
 ### What is it?
-DBAARF is an Arch install script that aims to be fairly minimal. It installs the os and sets up an i3wm (gaps!) environment cloned from my dotfiles, as well as programs that are either necessary or that I find myself using every day. This is by no means anything fancy, but definitely makes the installation and configuration so much less time consuming.
+DBAARF is an Arch install script that aims to be fairly minimal. It installs the os and sets up an i3wm (gaps!) environment cloned from my dotfiles, as well as programs that are either necessary or that I find myself using every day. This is by no means anything fancy, but definitely makes the installation and configuration much less time consuming.
 
 ### Screenshots
 ![screenshot1](https://github.com/DrBlythe/DBAARF/blob/master/screenshot1.png)  
