@@ -28,7 +28,7 @@ echo
      MYUUID=$(sudo blkid | grep $SWAPPART | cut -d'"' -f2)
      echo >>/etc/fstab
      echo "# /dev/$SWAPPART" >>/etc/fstab
-     echo "UUID=$MYUUID  	none    	swap    	defaults    0 0" >>/etc/fstab
+     echo "UUID=$MYUUID  	none    	swap    	defaults        0 0" >>/etc/fstab
      swapon
  fi
 
