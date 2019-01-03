@@ -87,7 +87,7 @@ echo
 echo "Installing more packages..."
 echo
 echo
-pacman -S sudo i3 pulseaudio pulseaudio-alsa pavucontrol pamixer pasystray xorg xorg-xinit dialog redshift feh thunar gvfs-smb lxappearance powertop vim ntfs-3g unzip imagemagick xfce4-terminal chromium compton base-devel bash-completion ttf-ibm-plex ttf-dejavu adobe-source-han-serif-jp-fonts adobe-source-han-sans-jp-fonts git acpi scrot xorg-xinput calibre cmake curl deluge evince mpv youtube-dl thunar-volman fuse-common fuse2 gimp gstreamer gst-libav gst-plugins-bad gst-plugins-good gst-plugins-ugly gvfs ifuse mesa mkvtoolnix-cli gparted perl python3 python2 qt-gstreamer sdl2 sdl2_gfx sdl2_image sdl2_mixer sdl2_net sdl2_ttf wget dmenu xorg-xbacklight
+pacman -S sudo i3 pulseaudio pulseaudio-alsa pavucontrol pamixer pasystray xorg xorg-xinit dialog redshift feh thunar powertop vim ntfs-3g unzip imagemagick xfce4-terminal chromium compton base-devel bash-completion ttf-ibm-plex ttf-dejavu adobe-source-han-serif-jp-fonts adobe-source-han-sans-jp-fonts git acpi scrot xorg-xinput calibre cmake curl deluge evince mpv youtube-dl thunar-volman fuse-common fuse2 gimp gstreamer mesa mkvtoolnix-cli gparted perl python3 python2 qt wget dmenu xorg-xbacklight
 
 # Add user to wheel
 echo "## Allow members of group wheel to execute any command" >> /etc/sudoers
