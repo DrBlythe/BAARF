@@ -77,7 +77,7 @@ lsblk
 echo
 echo
 echo
-echo -n 'Enter boot DISK, NOT PARTITION (i.e. sda or sdb, NOT sda1, sda2): '
+echo -n 'Enter DISK to install grub to, NOT PARTITION (i.e. sda or sdb, NOT sda1, sda2): '
 read BOOTDISK
 echo
 echo
@@ -107,7 +107,7 @@ echo
 useradd -m -G wheel -s /bin/bash $MYUSER
 echo
 echo
-echo -n "Enter password for $MYUSER"
+echo "Enter password for $MYUSER"
 passwd $MYUSER
 echo
 echo
