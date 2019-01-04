@@ -132,7 +132,7 @@ echo "NOTE: During installation, 'Running build hook: [block]' can take a while.
 echo
 echo
 # No I am not including neofetch
-pacman -S sudo i3 pulseaudio pulseaudio-alsa pavucontrol pamixer pasystray xf86-input-libinput mesa xorg xorg-xinit redshift feh bc thunar thunar-volman fuse2 fuse-common ntfs-3g unzip unrar imagemagick powertop vim xfce4-terminal chromium compton base-devel bash-completion ttf-ibm-plex ttf-dejavu git acpi scrot cmake curl deluge evince mpv youtube-dl mkvtoolnix-cli wget dmenu
+pacman -S sudo i3 pulseaudio pulseaudio-alsa pavucontrol pamixer pasystray xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift feh bc thunar thunar-volman fuse2 fuse-common ntfs-3g unzip unrar imagemagick powertop vim xfce4-terminal chromium compton base-devel bash-completion ttf-ibm-plex ttf-dejavu git acpi scrot cmake curl deluge evince mpv youtube-dl mkvtoolnix-cli wget dmenu
 
 # Add user to wheel
 echo "## Allow members of group wheel to execute any command" >> /etc/sudoers
