@@ -138,9 +138,9 @@ pacman -S sudo i3 pulseaudio pulseaudio-alsa pavucontrol pamixer pasystray xf86-
 echo "## Allow members of group wheel to execute any command" >> /etc/sudoers
 echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
 
-# Git dotfiles, copy finish.sh and move dotfiles to users home directory
+# Git dotfiles, copy post-install-notes from root and move dotfiles to users home directory
 echo
-cp finish.sh /home/$MYUSER/
+cp post-install-notes /home/$MYUSER/
 echo
 echo "Downloading dotfile repository..."
 echo
