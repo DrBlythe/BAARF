@@ -41,6 +41,6 @@ fi
 
 
 # Chroot into install
-cp postinstall.sh finish.sh chroot.sh /mnt
+cp post-install-notes chroot.sh /mnt
 arch-chroot /mnt ./chroot.sh
 
