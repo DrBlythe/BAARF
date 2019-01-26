@@ -46,15 +46,15 @@ echo "Installing packages..."
 echo "NOTE: During installation, 'Running build hook: [block]' can take a while. It has not (necessarily...) stalled "
 echo $'\n'
 # NO NEOFETCH 
-pacman -S grub-bios linux-headers wpa_supplicant wpa_actiond dialog wireless_tools openssh sudo i3 pulseaudio pulseaudio-alsa pavucontrol pamixer pasystray xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift feh bc ranger w3m sxiv ntp fuse2 fuse-common ntfs-3g unzip unrar imagemagick powertop vim xfce4-terminal firefox compton base-devel bash-completion ttf-ibm-plex ttf-dejavu git acpi scrot cmake curl deluge zathura zathura-djvu zathura-pdf-mupdf mpv youtube-dl mkvtoolnix-cli wget dmenu highlight
+pacman -S grub-bios linux-headers wpa_supplicant wpa_actiond dialog wireless_tools openssh sudo i3 pulseaudio pulseaudio-alsa pavucontrol pamixer pasystray xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift bc ranger w3m feh sxiv ntp fuse2 fuse-common ntfs-3g unzip unrar imagemagick powertop vim xfce4-terminal firefox compton base-devel bash-completion ttf-ibm-plex ttf-dejavu git acpi scrot cmake curl deluge zathura zathura-djvu zathura-pdf-mupdf mpv youtube-dl mkvtoolnix-cli wget dmenu highlight
 
 
 
 # Install grub
 echo $'\n\n\n\n'
-lsblk
+lsblk -l | grep disk
 echo $'\n\n\n\n'
-echo -n 'Enter DISK to install grub to, NOT PARTITION (i.e. sda or sdb, NOT sda1, sda2): '
+echo -n 'Enter disk to install grub to (i.e. sda): '
 read BOOTDISK
 echo $'\n\n\n\n'
 echo $'\n\n\n\n'
