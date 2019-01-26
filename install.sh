@@ -3,9 +3,10 @@
 # This script is an automated minimal Arch install.
 #
 
+
 # After partitioning, format file systems, and mount
 echo
-lsblk
+lsblk -l | grep part
 echo
 echo -n 'Enter name of root partition (i.e. sda1...): '
 read ROOTPART
@@ -18,11 +19,14 @@ mount /dev/$ROOTPART /mnt
 mkdir /mnt/home
 mount /dev/$HOMEPART /mnt/home
 
+
 # Install base arch
 pacstrap -i /mnt base
 
+
 # Generate fstab
 genfstab -U -p /mnt >> /mnt/etc/fstab
+
 
 # Check for swap (if exists, add to fstab)
 if [ "$(sudo fdisk -l | grep swap | cut -d'/' -f3 | cut -d' ' -f1)" != ""  ]
