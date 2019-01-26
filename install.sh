@@ -48,3 +48,5 @@ fi
 cp post-install-notes chroot.sh /mnt
 arch-chroot /mnt ./chroot.sh
 
+# Reboot after chroot is finished
+reboot

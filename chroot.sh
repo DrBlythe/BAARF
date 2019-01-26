@@ -126,6 +126,7 @@ echo "Defaults env_reset,pwfeedback" >> /etc/sudoers
 # Git dotfiles, copy post-install-notes from root and move dotfiles to users home directory
 echo
 cp post-install-notes /home/$MYUSER/
+rm /post-install-notes
 echo $'\n'
 echo "Downloading dotfile repository..."
 echo $'\n'
@@ -145,14 +146,14 @@ echo $'\n'
 
 
 
-# Remove install scripts from root, finish, reboot after delay
+# Remove install scripts from root
 rm /chroot.sh
 echo $'\n\n\n\n'
 echo $'\n\n\n\n'
 echo "INSTALLATION COMPLETE! :D"
-echo "When you log into your user account, there will be an installation-notes file in your home directory. Read it."
 echo
-echo "System will automatically reboot in 10 seconds..."
+echo "When you log into your user account, there will be an installation-notes file in your home directory. Read it."
+echo 
+echo "You may now reboot and remove installation media."
 echo $'\n\n\n\n'
-sleep 10
-/dev/initctl
+
