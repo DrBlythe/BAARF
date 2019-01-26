@@ -44,7 +44,7 @@ echo $'\n'
 echo "Installing packages..."
 echo $'\n'
 # NO NEOFETCH
-pacman -S grub-bios linux-headers wpa_supplicant wpa_actiond dialog wireless_tools openssh sudo i3 pulseaudio pulseaudio-alsa pavucontrol pamixer pasystray wicd wicd-gtk xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift bc ranger w3m feh sxiv ntp fuse2 fuse-common ntfs-3g unzip unrar imagemagick powertop vim xfce4-terminal firefox thunderbird compton base-devel bash-completion ttf-ibm-plex ttf-dejavu git acpi scrot cmake curl deluge zathura zathura-djvu zathura-pdf-mupdf mpv youtube-dl mkvtoolnix-cli wget dmenu highlight dunst
+pacman -S grub-bios linux-headers wpa_supplicant wpa_actiond dialog wireless_tools openssh sudo i3 pulseaudio pulseaudio-alsa pavucontrol pamixer pasystray wicd wicd-gtk xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift bc ranger w3m feh sxiv ntp fuse2 fuse-common ntfs-3g unzip unrar imagemagick powertop vim xfce4-terminal firefox thunderbird compton base-devel bash-completion ttf-ibm-plex ttf-dejavu git acpi scrot cmake curl deluge zathura zathura-djvu zathura-pdf-mupdf mpv youtube-dl mkvtoolnix-cli wget dmenu sysstat highlight dunst python python-requests
 
 
 
@@ -78,7 +78,13 @@ fi
 
 # Enable services
 systemctl enable sshd.service
-systemctl enable wicd.service
+systemctl enable wicd
+systemctl enable ntpd
+
+
+
+# Set clock based on network
+ntpd -gq
 
 
 
@@ -147,13 +153,15 @@ echo $'\n'
 
 
 # Remove install scripts from root
+# (Exits chroot.sh - back into install.sh - and reboots from that script)
 rm /chroot.sh
 echo $'\n\n\n\n'
 echo $'\n\n\n\n'
 echo "INSTALLATION COMPLETE! :D"
 echo
 echo "When you log into your user account, there will be an installation-notes file in your home directory. Read it."
-echo 
+echo
 echo "You may now reboot and remove installation media."
+echo "System will reboot in 10 seconds."
 echo $'\n\n\n\n'
-
+sleep 10
