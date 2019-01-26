@@ -1,11 +1,6 @@
 #!/bin/bash
 #
-# Install some packages
-echo
-echo 'Installing grub, linux headers, wireless packages...'
-echo
-pacman -S grub-bios linux-headers wpa_supplicant wpa_actiond dialog wireless_tools openssh
-echo $'\n'
+
 
 # Set locale, symlink to local time
 echo $'\n\n\n\n'
@@ -25,6 +20,8 @@ read MYCITY
 echo $'\n\n\n\n'
 echo $'\n\n\n\n'
 
+
+
 # Symlink time zone, sync hardware clock
 echo
 ln -sf /usr/share/zoneinfo/$MYREGION/$MYCITY /etc/localtime
@@ -32,12 +29,26 @@ hwclock --systohc --utc
 systemctl enable sshd.service
 echo $'\n\n\n\n'
 
+
+
 # Set root password
 echo
 echo 'Set password for root: '
 echo
 passwd
 echo $'\n\n\n\n'
+
+
+
+# Install packages
+echo $'\n'
+echo "Installing packages..."
+echo "NOTE: During installation, 'Running build hook: [block]' can take a while. It has not (necessarily...) stalled "
+echo $'\n'
+# NO NEOFETCH 
+pacman -S grub-bios linux-headers wpa_supplicant wpa_actiond dialog wireless_tools openssh sudo i3 pulseaudio pulseaudio-alsa pavucontrol pamixer pasystray xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift feh bc ranger w3m sxiv ntp fuse2 fuse-common ntfs-3g unzip unrar imagemagick powertop vim xfce4-terminal firefox compton base-devel bash-completion ttf-ibm-plex ttf-dejavu git acpi scrot cmake curl deluge zathura zathura-djvu zathura-pdf-mupdf mpv youtube-dl mkvtoolnix-cli wget dmenu highlight
+
+
 
 # Install grub
 echo $'\n\n\n\n'
@@ -52,6 +63,8 @@ echo $'\n'
 grub-install --target=i386-pc --recheck /dev/$BOOTDISK
 cp /usr/share/locale/en\@quot/LC_MESSAGES/grub.mo /boot/grub/locale/en.mo
 grub-mkconfig -o /boot/grub/grub.cfg
+
+
 
 # Create user, password, change hostname
 echo $'\n\n\n\n'
@@ -68,17 +81,15 @@ read MYHOST
 echo $MYHOST >/etc/hostname
 echo $'\n\n\n\n'
 
-# Install purdy purdy packages
-echo $'\n'
-echo "Installing more packages..."
-echo "NOTE: During installation, 'Running build hook: [block]' can take a while. It has not (necessarily...) stalled "
-echo $'\n'
-# No I am not including neofetch
-pacman -S sudo i3 pulseaudio pulseaudio-alsa pavucontrol pamixer pasystray xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift feh bc thunar thunar-volman fuse2 fuse-common ntfs-3g unzip unrar imagemagick powertop vim xfce4-terminal chromium compton base-devel bash-completion ttf-ibm-plex ttf-dejavu git acpi scrot cmake curl deluge evince mpv youtube-dl mkvtoolnix-cli wget dmenu highlight
+
 
 # Add user to wheel
 echo "## Allow members of group wheel to execute any command" >> /etc/sudoers
 echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
+echo "## Enable password feedback"
+echo "Defaults env_reset,pwfeedback" >> /etc/sudoers
+
+
 
 # Git dotfiles, copy post-install-notes from root and move dotfiles to users home directory
 echo
@@ -96,6 +107,8 @@ cd /home/$MYUSER
 rm -r /home/$MYUSER/dotfiles
 chown -R $MYUSER /home/$MYUSER
 echo $'\n'
+
+
 
 # Install video drivers
 ATI=$(lspci | grep VGA | grep ATI)
@@ -124,11 +137,15 @@ if [ ! -z  "$AMD" ]; then
 fi
 
 
-# Remove install scripts from root
+
+# Remove install scripts from root, finish, reboot after delay
 rm /chroot.sh
 echo $'\n\n\n\n'
 echo $'\n\n\n\n'
 echo "INSTALLATION COMPLETE! :D"
-echo "You may now reboot your system and remove Arch install media."
 echo "When you log into your user account, there will be an installation-notes file in your home directory. Read it."
+echo 
+echo "System will automatically reboot in 10 seconds..."
 echo $'\n\n\n\n'
+sleep 10
+reboot

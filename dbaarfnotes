@@ -1,0 +1,4 @@
+ranger
+	add
+		set preview_images true
+	to ~/.config/ranger/rc.conf
