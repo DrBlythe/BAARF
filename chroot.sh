@@ -26,7 +26,6 @@ echo $'\n\n\n\n'
 echo
 ln -sf /usr/share/zoneinfo/$MYREGION/$MYCITY /etc/localtime
 hwclock --systohc --utc
-systemctl enable sshd.service
 echo $'\n\n\n\n'
 
 
@@ -43,10 +42,43 @@ echo $'\n\n\n\n'
 # Install packages
 echo $'\n'
 echo "Installing packages..."
-echo "NOTE: During installation, 'Running build hook: [block]' can take a while. It has not (necessarily...) stalled "
 echo $'\n'
 # NO NEOFETCH
-pacman -S grub-bios linux-headers wpa_supplicant wpa_actiond dialog wireless_tools openssh sudo i3 pulseaudio pulseaudio-alsa pavucontrol pamixer pasystray networkmanager network-manager-applet xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift bc ranger w3m feh sxiv ntp fuse2 fuse-common ntfs-3g unzip unrar imagemagick powertop vim xfce4-terminal firefox thunderbird compton base-devel bash-completion ttf-ibm-plex ttf-dejavu git acpi scrot cmake curl deluge zathura zathura-djvu zathura-pdf-mupdf mpv youtube-dl mkvtoolnix-cli wget dmenu highlight dunst
+pacman -S grub-bios linux-headers wpa_supplicant wpa_actiond dialog wireless_tools openssh sudo i3 pulseaudio pulseaudio-alsa pavucontrol pamixer pasystray wicd wicd-gtk xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift bc ranger w3m feh sxiv ntp fuse2 fuse-common ntfs-3g unzip unrar imagemagick powertop vim xfce4-terminal firefox thunderbird compton base-devel bash-completion ttf-ibm-plex ttf-dejavu git acpi scrot cmake curl deluge zathura zathura-djvu zathura-pdf-mupdf mpv youtube-dl mkvtoolnix-cli wget dmenu highlight dunst
+
+
+
+# Install video drivers
+ATI=$(lspci | grep VGA | grep ATI)
+NVIDIA=$(lspci | grep VGA | grep NVIDIA)
+INTEL=$(lspci | grep VGA | grep Intel)
+AMD=$(lspci | grep VGA | grep AMD)
+
+if [ ! -z "$ATI" ]; then
+    echo 'Ati graphics detected'
+    pacman -S xf86-video-ati
+fi
+
+if [ ! -z "$NVIDIA" ]; then
+    echo 'Nvidia graphics detected'
+    pacman -S xf86-video-nouveau
+fi
+
+if [ ! -z  "$INTEL" ]; then
+    echo 'Intel graphics detected'
+    pacman -S xf86-video-intel
+fi
+
+if [ ! -z  "$AMD" ]; then
+    echo 'AMD graphics detected'
+    pacman -S xf86-video-amdgpu
+fi
+
+
+
+# Enable services
+systemctl enable sshd.service
+systemctl enable wicd.service
 
 
 
@@ -86,7 +118,7 @@ echo $'\n\n\n\n'
 # Add user to wheel
 echo "## Allow members of group wheel to execute any command" >> /etc/sudoers
 echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
-echo "## Enable password feedback"
+echo "## Enable password feedback" >> /etc/sudoers
 echo "Defaults env_reset,pwfeedback" >> /etc/sudoers
 
 
@@ -110,31 +142,6 @@ echo $'\n'
 
 
 
-# Install video drivers
-ATI=$(lspci | grep VGA | grep ATI)
-NVIDIA=$(lspci | grep VGA | grep NVIDIA)
-INTEL=$(lspci | grep VGA | grep Intel)
-AMD=$(lspci | grep VGA | grep AMD)
-
-if [ ! -z "$ATI" ]; then
-    echo 'Ati graphics detected'
-    pacman -S xf86-video-ati
-fi
-
-if [ ! -z "$NVIDIA" ]; then
-    echo 'Nvidia graphics detected'
-    pacman -S xf86-video-nouveau
-fi
-
-if [ ! -z  "$INTEL" ]; then
-    echo 'Intel graphics detected'
-    pacman -S xf86-video-intel
-fi
-
-if [ ! -z  "$AMD" ]; then
-    echo 'AMD graphics detected'
-    pacman -S xf86-video-amdgpu
-fi
 
 
 
@@ -148,4 +155,4 @@ echo
 echo "System will automatically reboot in 10 seconds..."
 echo $'\n\n\n\n'
 sleep 10
-reboot
+/dev/initctl
