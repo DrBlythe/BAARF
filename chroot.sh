@@ -45,8 +45,8 @@ echo $'\n'
 echo "Installing packages..."
 echo "NOTE: During installation, 'Running build hook: [block]' can take a while. It has not (necessarily...) stalled "
 echo $'\n'
-# NO NEOFETCH 
-pacman -S grub-bios linux-headers wpa_supplicant wpa_actiond dialog wireless_tools openssh sudo i3 pulseaudio pulseaudio-alsa pavucontrol pamixer pasystray xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift bc ranger w3m feh sxiv ntp fuse2 fuse-common ntfs-3g unzip unrar imagemagick powertop vim xfce4-terminal firefox thunderbird compton base-devel bash-completion ttf-ibm-plex ttf-dejavu git acpi scrot cmake curl deluge zathura zathura-djvu zathura-pdf-mupdf mpv youtube-dl mkvtoolnix-cli wget dmenu highlight dunst
+# NO NEOFETCH
+pacman -S grub-bios linux-headers wpa_supplicant wpa_actiond dialog wireless_tools openssh sudo i3 pulseaudio pulseaudio-alsa pavucontrol pamixer pasystray networkmanager network-manager-applet xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift bc ranger w3m feh sxiv ntp fuse2 fuse-common ntfs-3g unzip unrar imagemagick powertop vim xfce4-terminal firefox thunderbird compton base-devel bash-completion ttf-ibm-plex ttf-dejavu git acpi scrot cmake curl deluge zathura zathura-djvu zathura-pdf-mupdf mpv youtube-dl mkvtoolnix-cli wget dmenu highlight dunst
 
 
 
@@ -144,7 +144,7 @@ echo $'\n\n\n\n'
 echo $'\n\n\n\n'
 echo "INSTALLATION COMPLETE! :D"
 echo "When you log into your user account, there will be an installation-notes file in your home directory. Read it."
-echo 
+echo
 echo "System will automatically reboot in 10 seconds..."
 echo $'\n\n\n\n'
 sleep 10
