@@ -44,7 +44,7 @@ echo $'\n'
 echo "Installing packages..."
 echo $'\n'
 # NO NEOFETCH
-pacman -S grub-bios linux-headers wpa_supplicant wpa_actiond dialog wireless_tools openssh sudo i3 pulseaudio pulseaudio-alsa pavucontrol pamixer pasystray ntp wicd wicd-gtk xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift bc ranger w3m feh sxiv ntp fuse2 fuse-common ntfs-3g unzip unrar imagemagick powertop vim xfce4-terminal firefox thunderbird compton base-devel bash-completion ttf-ibm-plex ttf-dejavu adobe-source-han-sans-jp-fonts adobe-source-han-serif-jp-fonts git acpi scrot cmake curl deluge zathura zathura-djvu zathura-pdf-mupdf mpv youtube-dl mkvtoolnix-cli wget dmenu sysstat highlight dunst python python-requests
+pacman -S grub-bios linux-headers wpa_supplicant wpa_actiond dialog wireless_tools openssh sudo i3 pulseaudio pulseaudio-alsa pavucontrol pamixer pasystray networkmanager network-manager-applet xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift bc ranger w3m feh sxiv fuse2 fuse-common ntfs-3g unzip unrar imagemagick powertop vim xfce4-terminal firefox thunderbird compton base-devel bash-completion ttf-ibm-plex ttf-dejavu adobe-source-han-sans-jp-fonts adobe-source-han-serif-jp-fonts git acpi scrot cmake curl deluge zathura zathura-djvu zathura-pdf-mupdf mpv youtube-dl mkvtoolnix-cli wget dmenu sysstat highlight dunst python python-requests
 
 
 
@@ -73,18 +73,6 @@ if [ ! -z  "$AMD" ]; then
     echo 'AMD graphics detected'
     pacman -S xf86-video-amdgpu
 fi
-
-
-
-# Enable services
-systemctl enable sshd.service
-systemctl enable wicd
-systemctl enable ntpd
-
-
-
-# Set clock based on network
-ntpd -gq
 
 
 
