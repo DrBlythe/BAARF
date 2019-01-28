@@ -2,24 +2,57 @@
 #
 
 
+
+# Set root password
+echo
+echo 'Set password for root: '
+echo
+passwd
+echo $'\n\n\n\n'
+
+
+
 # Set locale, symlink to local time
 echo $'\n\n\n\n'
 echo 'en_US.UTF-8 UTF-8' >>/etc/locale.gen
 locale-gen
 echo $'\n\n\n\n'
-ls /usr/share/zoneinfo/
-echo $'\n\n\n\n'
-echo -n 'ENTER NAME OF REGION, EXACTLY AS IT APPEARS ABOVE: '
-read MYREGION
-echo $'\n\n\n\n'
-echo $'\n\n\n\n'
-ls /usr/share/zoneinfo/$MYREGION
-echo $'\n\n\n\n'
-echo -n 'ENTER NAME OF CITY, EXACTLY AS IT APPEARS ABOVE: '
-read MYCITY
-echo $'\n\n\n\n'
-echo $'\n\n\n\n'
 
+# Get zoneinfo from user
+VALID_REGION=0
+regionArray=$(ls /usr/share/zoneinfo)
+while [ $VALID_REGION -eq 0 ]
+do
+	ls /usr/share/zoneinfo/
+	echo $'\n\n\n'
+	echo -n 'ENTER NAME OF REGION, EXACTLY AS IT APPEARS ABOVE: '
+	read MYREGION	
+
+	for region in ${regionArray[@]}; do
+		if [ "$region" = $MYREGION ]; then
+			VALID_REGION=1
+		fi
+	done
+
+echo $'\n\n\n'
+
+if [ -d /usr/share/zoneinfo/$MYREGION ]; then
+	VALID_CITY=0
+	cityArray=$(ls /usr/share/zoneinfo/$MYREGION)
+	while [ $VALID_CITY -eq 0 ]; do
+		ls /usr/share/zoneinfo/$MYREGION/
+		echo $'\n\n\n'
+		echo -n 'ENTER NAME OF CITY, EXACTLY AS IT APPEARS ABOVE: '
+		read MYCITY
+		for city in ${cityArray[@]}; do
+			if [ "$city" = $MYCITY ]; then
+				VALID_CITY=1;
+			fi
+		done
+	done
+fi
+
+echo $'\n\n\n'
 
 
 # Symlink time zone, sync hardware clock
@@ -28,14 +61,6 @@ ln -sf /usr/share/zoneinfo/$MYREGION/$MYCITY /etc/localtime
 hwclock --systohc --utc
 echo $'\n\n\n\n'
 
-
-
-# Set root password
-echo
-echo 'Set password for root: '
-echo
-passwd
-echo $'\n\n\n\n'
 
 
 
@@ -134,9 +159,6 @@ cd /home/$MYUSER
 rm -r /home/$MYUSER/dotfiles
 chown -R $MYUSER /home/$MYUSER
 echo $'\n'
-
-
-
 
 
 
