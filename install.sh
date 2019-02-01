@@ -21,7 +21,7 @@ mount /dev/$HOMEPART /mnt/home
 
 
 # Install base arch
-pacstrap -i /mnt base
+pacstrap -i /mnt base dialog grub linux-headers wpa_supplicant wpa_actiond wireless_tools openssh
 
 
 # Generate fstab
