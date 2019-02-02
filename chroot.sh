@@ -21,8 +21,7 @@ echo $'\n\n\n\n'
 # Get zoneinfo from user
 VALID_REGION=0
 regionArray=$(ls /usr/share/zoneinfo)
-while [ $VALID_REGION -eq 0 ]
-do
+while [ $VALID_REGION -eq 0 ]; do
 	ls /usr/share/zoneinfo/
 	echo $'\n\n\n'
 	echo -n 'ENTER NAME OF REGION, EXACTLY AS IT APPEARS ABOVE: '
@@ -33,6 +32,7 @@ do
 			VALID_REGION=1
 		fi
 	done
+done
 
 echo $'\n\n\n'
 
