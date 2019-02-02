@@ -69,7 +69,7 @@ echo $'\n'
 echo "Installing packages..."
 echo $'\n'
 # NO NEOFETCH!11!!!1
-pacman -S sudo i3 pulseaudio pulseaudio-alsa pavucontrol pamixer pasystray networkmanager network-manager-applet xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift bc ranger w3m feh ntfs-3g dosfstools unzip unrar imagemagick htop tlp vim urxvt chromium thunderbird base-devel bash-completion ttf-ibm-plex ttf-dejavu adobe-source-han-sans-jp-fonts adobe-source-han-serif-jp-fonts git acpi scrot cmake curl zathura zathura-djvu zathura-pdf-mupdf mpv youtube-dl mkvtoolnix-cli wget dmenu sysstat python python-requests
+pacman -Sy sudo i3 pulseaudio pulseaudio-alsa pavucontrol pamixer pasystray networkmanager network-manager-applet xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift bc ranger w3m feh ntfs-3g dosfstools unzip unrar imagemagick htop tlp vim urxvt chromium thunderbird base-devel bash-completion ttf-ibm-plex ttf-dejavu adobe-source-han-sans-jp-fonts adobe-source-han-serif-jp-fonts git acpi scrot cmake curl zathura zathura-djvu zathura-pdf-mupdf mpv youtube-dl mkvtoolnix-cli wget dmenu sysstat python python-requests
 
 
 
