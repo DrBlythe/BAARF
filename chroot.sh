@@ -1,22 +1,29 @@
 #!/bin/bash
 #
 
-
-
 # Set root password
-echo
-echo 'Set password for root: '
-echo
-passwd
-echo $'\n\n\n\n'
-
-
+pass_ok=0
+while [ $pass_ok -eq 0 ]; do
+	echo
+	echo -n 'Set password for root: '
+	read rootPw
+	echo -n 'Confirm password for root: '
+	read rootPwConf
+	if [ "$rootPw" = "$rootPwConf" ]; then
+		pass_ok=1
+	else
+		echo
+		echo "Password does not match."
+		echo
+	fi
+done
+echo "root:${rootPw}" | chpasswd
 
 # Set locale, symlink to local time
-echo $'\n\n\n\n'
+echo $'\n\n'
 echo 'en_US.UTF-8 UTF-8' >>/etc/locale.gen
 locale-gen
-echo $'\n\n\n\n'
+echo $'\n\n'
 
 # Get zoneinfo from user
 VALID_REGION=0
@@ -69,8 +76,7 @@ echo $'\n'
 echo "Installing packages..."
 echo $'\n'
 # NO NEOFETCH!11!!!1
-pacman -Sy dialog grub linux-headers wpa_supplicant wpa_actiond wireless_tools openssh sudo i3 pulseaudio pulseaudio-alsa pavucontrol pamixer pasystray networkmanager network-manager-applet xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift bc ranger w3m feh ntfs-3g dosfstools unzip unrar imagemagick htop tlp vim urxvt chromium thunderbird base-devel bash-completion ttf-ibm-plex ttf-dejavu adobe-source-han-sans-jp-fonts adobe-source-han-serif-jp-fonts git acpi scrot cmake curl zathura zathura-djvu zathura-pdf-mupdf mpv youtube-dl mkvtoolnix-cli wget dmenu sysstat python python-requests
-
+pacman -S -y --quiet --noconfirm grub sudo pulseaudio pulseaudio-alsa pavucontrol networkmanager network-manager-applet xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift feh htop vim firefox base-devel bash-completion git acpi zathura zathura-djvu zathura-pdf-mupdf wget dmenu netctl
 
 
 # Install video drivers
