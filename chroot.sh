@@ -135,6 +135,9 @@ function install_packages() {
 	#cd
 	#rm -rf "$yaydir"
 
+	# Install packages
+	pacman -S -y --quiet --noconfirm bspwm sxhkd grub pulseaudio pulseaudio-alsa pavucontrol networkmanager network-manager-applet xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift feh htop vim firefox base-devel bash-completion git acpi zathura zathura-djvu zathura-pdf-mupdf wget dmenu netctl
+
 	# Check video drivers
 	echo "Checking graphics card..."
 	ati=$(lspci | grep VGA | grep ATI)
@@ -144,27 +147,20 @@ function install_packages() {
 	
 	if [ ! -z "$ati" ]; then
 	    echo 'Ati graphics detected'
-	    #pacman -S xf86-video-ati
-	    ati="xf86-video-ati"
+	    pacman -S -y --quiet --noconfirm xf86-video-ati
 	fi
 	if [ ! -z "$nvidia" ]; then
 	    echo 'Nvidia graphics detected'
-	    #pacman -S xf86-video-nouveau
-	    nvidia="xf86-video-nouveau"
+	    pacman -S -y --quiet --noconfirm xf86-video-nouveau
 	fi
 	if [ ! -z  "$intel" ]; then
 	    echo 'Intel graphics detected'
-	    #pacman -S xf86-video-intel
-	    intel="xf86-video-intel"
+	    pacman -S -y --quiet --noconfirm xf86-video-intel
 	fi
 	if [ ! -z  "$amd" ]; then
 	    echo 'AMD graphics detected'
-	    #pacman -S xf86-video-amdgpu
-	    nvidia="xf86-video-amdgpu"
+	    pacman -S -y --quiet --noconfirm xf86-video-amdgpu
 	fi
-
-	# Install packages
-	pacman -S -y --quiet --noconfirm bspwm sxhkd grub pulseaudio pulseaudio-alsa pavucontrol networkmanager network-manager-applet xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift feh htop vim firefox base-devel bash-completion git acpi zathura zathura-djvu zathura-pdf-mupdf wget dmenu netctl "$ati" "$nvidia" "$intel" "$amd"
 	echo
 	echo
 }
@@ -172,6 +168,7 @@ function install_packages() {
 
 # Install grub
 function install_grub() {
+	clear
 	echo "---------------------"
 	echo "| Grub Installation |"
 	echo "---------------------"

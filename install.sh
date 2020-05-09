@@ -182,6 +182,7 @@ function pre_chroot() {
 }
 
 function prompt_reboot() {
+	clear
 	echo -e "------------"
 	echo -e "| COMPLETE |"
 	echo -e "------------"
