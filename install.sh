@@ -170,13 +170,15 @@ function install_base() {
 	echo -e "| 5. Install Base System | "
 	echo -e "--------------------------"
 	echo
-	pacstrap /mnt base base-devel linux linux-firmware
+	pacstrap /mnt base base-devel linux linux-firmware sudo
 }
 
 function pre_chroot() {
 	echo "CREATING FSTAB FOR NEW SYSTEM"
 	genfstab -U /mnt >> /mnt/etc/fstab
 	cp post-install-notes chroot.sh /mnt
+	echo
+	echo
 }
 
 function prompt_reboot() {
@@ -195,7 +197,7 @@ swap
 filesystem
 install_base
 pre_chroot
-#arch-chroot /mnt ./chroot.sh
+arch-chroot /mnt ./chroot.sh
 prompt_reboot
 
 # if [ "$(sudo fdisk -l | grep swap | cut -d'/' -f3 | cut -d' ' -f1)" != ""  ]
@@ -211,12 +213,3 @@ prompt_reboot
 #         echo "UUID=$MYUUID     none        swap        defaults        0 0" >>/mnt/etc/fstab
 #         swapon
 # fi
-# 
-# 
-# # Chroot into install
-# cp post-install-notes chroot.sh /mnt
-# arch-chroot /mnt ./chroot.sh
-# 
-# # Reboot after chroot script finishes
-# reboot
-# 

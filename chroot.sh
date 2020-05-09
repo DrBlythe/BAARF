@@ -1,7 +1,14 @@
 #!/bin/bash
 #
 
+
+# Globals
+user_name=""
+root_pw=""
+host_name=""
+
 function set_root_pw() {
+	clear
 	echo "-----------------"
 	echo "| Root Password |"
 	echo "-----------------"
@@ -10,10 +17,10 @@ function set_root_pw() {
 	while [ $pass_ok -eq 0 ]; do
 		echo
 		echo -n 'Set password for root: '
-		read rootPw
+		read root_pw_conf
 		echo -n 'Confirm password for root: '
-		read rootPwConf
-		if [ "$rootPw" = "$rootPwConf" ]; then
+		read root_pw_conf
+		if [ "$root_pw" = "$root_pw_conf" ]; then
 			pass_ok=1
 		else
 			echo
@@ -21,7 +28,9 @@ function set_root_pw() {
 			echo
 		fi
 	done
-	echo "root:${rootPw}" | chpasswd
+	echo "root:${root_pw}" | chpasswd
+	echo
+	echo
 }
 
 
@@ -29,13 +38,13 @@ function set_timezone() {
 	echo "-----------------------"
 	echo "| Locale and Timezone |"
 	echo "-----------------------"
+	echo
 	
 	# Set locale, symlink to local time
-	echo 
 	echo SETTING LOCALE
-	echo
 	echo 'en_US.UTF-8 UTF-8' >>/etc/locale.gen # How presumptuous of me. It's the 4th of July every day YEAAAAAAHHHHH!!!11!
 	locale-gen
+	clear
 
 	# Get zoneinfo from user
 	VALID_REGION=0
@@ -77,21 +86,54 @@ function set_timezone() {
 	echo
 }
 
+# Create user, password, change hostname
+function create_user() {
+	echo "-----------------"
+	echo "| User Creation |"
+	echo "-----------------"
+	echo
+	echo -n "Enter desired username: "
+	read user_name
+	echo
+	useradd -m -G wheel -s /bin/bash $user_name
+	echo $'\n'
+	echo "Enter password for $user_name"
+	passwd $user_name
+	echo
+	echo -n "Enter desired hostname: "
+	read host_name
+	echo $host_name > /etc/hostname
+	echo
+	echo
+	
+	# Add user to wheel
+	echo "" >> /etc/sudoers
+	echo "## Allow members of group wheel to execute any command" >> /etc/sudoers
+	echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
+	echo "## Enable password feedback" >> /etc/sudoers
+	echo "Defaults env_reset,pwfeedback" >> /etc/sudoers
+
+}
+
+
 function install_packages() {
 	echo "------------------------"
 	echo "| Package Installation |"
 	echo "------------------------"
+	echo
 
 	# Install yay
-	echo
+	yaydir="/home/$user_name/yay"
 	echo "INSTALLING YAY"
 	echo
-	git clone https://aur.archlinux.org/yay.git
-	cd yay
-	makepkg -si
+	pacman -S -y --quiet --noconfirm git
+	su "$user_name" -c "git clone https://aur.archlinux.org/yay.git $yaydir"
+	chown -R $user_name $yaydir
+	cd "$yaydir"
+	su "$user_name" -c "makepkg -si"
 	wait
-	cd ..
-	rm -rf yay
+	cd
+	rm -rf "$yaydir"
 
 	# Check video drivers
 	echo "Checking graphics card..."
@@ -122,7 +164,7 @@ function install_packages() {
 	fi
 
 	# Install packages
-	yay -S -y --quiet --noconfirm bspwm sxhkd polybar grub sudo pulseaudio pulseaudio-alsa pavucontrol networkmanager network-manager-applet xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift feh htop vim firefox base-devel bash-completion git acpi zathura zathura-djvu zathura-pdf-mupdf wget dmenu netctl "$ati" "$nvidia" "$intel" "$amd"
+	yay -S -y --quiet --noconfirm bspwm sxhkd polybar grub pulseaudio pulseaudio-alsa pavucontrol networkmanager network-manager-applet xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift feh htop vim firefox base-devel bash-completion git acpi zathura zathura-djvu zathura-pdf-mupdf wget dmenu netctl "$ati" "$nvidia" "$intel" "$amd"
 	echo
 	echo
 }
@@ -137,40 +179,11 @@ function install_grub() {
 	echo 
 	lsblk -l | grep disk
 	echo 
-	echo -n 'Enter disk to install grub to: '
+	echo -n 'Enter disk to install grub to (NOT PARTITION): '
 	read grub_disk
-	grub-install --target=i386-pc --recheck /dev/$grub_disk
+	grub-install --target=i386-pc /dev/$grub_disk
 	grub-mkconfig -o /boot/grub/grub.cfg
 	echo
-}
-
-# Create user, password, change hostname
-function create_user() {
-	echo "---------------------"
-	echo "| Grub Installation |"
-	echo "---------------------"
-	echo
-	echo -n "Enter desired username: "
-	read user_name
-	echo
-	useradd -m -G wheel -s /bin/bash $user_name
-	echo $'\n'
-	echo "Enter password for $user_name"
-	passwd $user_name
-	echo
-	echo -n "Enter desired hostname: "
-	read host_name
-	echo $host_name > /etc/hostname
-	echo
-	echo
-	
-	# Add user to wheel
-	echo "" >> /etc/sudoers
-	echo "## Allow members of group wheel to execute any command" >> /etc/sudoers
-	echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
-	echo "## Enable password feedback" >> /etc/sudoers
-	echo "Defaults env_reset,pwfeedback" >> /etc/sudoers
-
 }
 
 function clean_up() {
@@ -181,7 +194,7 @@ function clean_up() {
 
 set_root_pw
 set_timezone
+create_user
 install_packages
 install_grub
-create_user
 clean_up
