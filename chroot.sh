@@ -4,6 +4,7 @@
 
 # Globals
 user_name=""
+user_pw=""
 root_pw=""
 host_name=""
 
@@ -141,21 +142,21 @@ function install_packages() {
 	echo "------------------------"
 	echo
 
-	## Install yay
-	#yaydir="/home/$user_name/yay"
-	#echo "INSTALLING YAY"
-	#echo
-	#pacman -S -y --quiet --noconfirm git
-	#su "$user_name" -c "git clone https://aur.archlinux.org/yay.git $yaydir"
-	#chown -R $user_name $yaydir
-	#cd "$yaydir"
-	#su "$user_name" -c "makepkg -si"
-	#wait
-	#cd
-	#rm -rf "$yaydir"
+	# Install yay
+	yaydir="/home/$user_name/yay"
+	pacman -S -y --quiet --noconfirm git
+	su "$user_name" -c "git clone https://aur.archlinux.org/yay.git $yaydir"
+	chown -R "$user_name" "$yaydir"
+	chown -R "$user_name" /package.sh
+	cd "$yaydir"
+	#su "$user_name" -c "echo $root_pw | makepkg -si"
+	sudo -u "$user_name" /package.sh "$user_pw"
+	wait
+	cd
+	rm -rf "$yaydir"
 
 	# Install packages
-	pacman -S -y --quiet --noconfirm bspwm sxhkd grub pulseaudio pulseaudio-alsa pavucontrol networkmanager network-manager-applet xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift feh htop vim firefox base-devel bash-completion git acpi zathura zathura-djvu zathura-pdf-mupdf wget dmenu netctl dialog dhcpcd
+	yay -S -y --quiet --noconfirm bspwm sxhkd polybar grub pulseaudio pulseaudio-alsa pavucontrol networkmanager network-manager-applet xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift feh htop vim firefox base-devel bash-completion git acpi zathura zathura-djvu zathura-pdf-mupdf wget dmenu netctl dialog dhcpcd
 
 	# Check video drivers
 	echo "Checking graphics card..."
@@ -166,19 +167,19 @@ function install_packages() {
 	
 	if [ ! -z "$ati" ]; then
 	    echo 'Ati graphics detected'
-	    pacman -S -y --quiet --noconfirm xf86-video-ati
+	    yay -S -y --quiet --noconfirm xf86-video-ati
 	fi
 	if [ ! -z "$nvidia" ]; then
 	    echo 'Nvidia graphics detected'
-	    pacman -S -y --quiet --noconfirm xf86-video-nouveau
+	    yay -S -y --quiet --noconfirm xf86-video-nouveau
 	fi
 	if [ ! -z  "$intel" ]; then
 	    echo 'Intel graphics detected'
-	    pacman -S -y --quiet --noconfirm xf86-video-intel
+	    yay -S -y --quiet --noconfirm xf86-video-intel
 	fi
 	if [ ! -z  "$amd" ]; then
 	    echo 'AMD graphics detected'
-	    pacman -S -y --quiet --noconfirm xf86-video-amdgpu
+	    yay -S -y --quiet --noconfirm xf86-video-amdgpu
 	fi
 	echo
 	echo
@@ -187,7 +188,6 @@ function install_packages() {
 
 # Install grub
 function install_grub() {
-	clear
 	echo "---------------------"
 	echo "| Grub Installation |"
 	echo "---------------------"
@@ -205,7 +205,7 @@ function install_grub() {
 function clean_up() {
 	# Remove install scripts from root
 	# (Exits chroot.sh - back into install.sh - and reboots from that script)
-	rm /chroot.sh
+	rm /chroot.sh /package.sh
 }
 
 set_root_pw
