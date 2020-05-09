@@ -97,8 +97,27 @@ function create_user() {
 	echo
 	useradd -m -G wheel -s /bin/bash $user_name
 	echo $'\n'
-	echo "Enter password for $user_name"
-	passwd $user_name
+
+	pass_ok=0
+	while [ $pass_ok -eq 0 ]; do
+		echo
+		echo -n 'Set password for $user_name: '
+		read user_pw
+		echo -n 'Confirm password for $user_name: '
+		read user_pw_conf
+		if [ "$user_pw" = "$user_pw_conf" ]; then
+			pass_ok=1
+		else
+			echo
+			echo "Password does not match."
+			echo
+		fi
+	done
+
+	echo "${user_name}:${user_pw}" | chpasswd
+	echo
+	echo
+
 	echo
 	echo -n "Enter desired hostname: "
 	read host_name
@@ -136,7 +155,7 @@ function install_packages() {
 	#rm -rf "$yaydir"
 
 	# Install packages
-	pacman -S -y --quiet --noconfirm bspwm sxhkd grub pulseaudio pulseaudio-alsa pavucontrol networkmanager network-manager-applet xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift feh htop vim firefox base-devel bash-completion git acpi zathura zathura-djvu zathura-pdf-mupdf wget dmenu netctl
+	pacman -S -y --quiet --noconfirm bspwm sxhkd grub pulseaudio pulseaudio-alsa pavucontrol networkmanager network-manager-applet xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift feh htop vim firefox base-devel bash-completion git acpi zathura zathura-djvu zathura-pdf-mupdf wget dmenu netctl dialog dhcpcd
 
 	# Check video drivers
 	echo "Checking graphics card..."
