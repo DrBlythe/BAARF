@@ -170,7 +170,7 @@ function install_base() {
 	echo -e "| 5. Install Base System | "
 	echo -e "--------------------------"
 	echo
-	pacstrap /mnt base linux linux-firmware
+	pacstrap /mnt base base-devel linux linux-firmware
 }
 
 function pre_chroot() {

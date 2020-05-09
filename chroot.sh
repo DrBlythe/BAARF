@@ -1,183 +1,187 @@
 #!/bin/bash
 #
 
-# Set root password
-pass_ok=0
-while [ $pass_ok -eq 0 ]; do
+function set_root_pw() {
+	echo "-----------------"
+	echo "| Root Password |"
+	echo "-----------------"
 	echo
-	echo -n 'Set password for root: '
-	read rootPw
-	echo -n 'Confirm password for root: '
-	read rootPwConf
-	if [ "$rootPw" = "$rootPwConf" ]; then
-		pass_ok=1
-	else
+	pass_ok=0
+	while [ $pass_ok -eq 0 ]; do
 		echo
-		echo "Password does not match."
-		echo
-	fi
-done
-echo "root:${rootPw}" | chpasswd
-
-# Set locale, symlink to local time
-echo $'\n\n'
-echo 'en_US.UTF-8 UTF-8' >>/etc/locale.gen
-locale-gen
-echo $'\n\n'
-
-# Get zoneinfo from user
-VALID_REGION=0
-regionArray=$(ls /usr/share/zoneinfo)
-while [ $VALID_REGION -eq 0 ]; do
-	ls /usr/share/zoneinfo/
-	echo $'\n\n\n'
-	echo -n 'ENTER NAME OF REGION, EXACTLY AS IT APPEARS ABOVE: '
-	read MYREGION	
-
-	for region in ${regionArray[@]}; do
-		if [ "$region" = $MYREGION ]; then
-			VALID_REGION=1
+		echo -n 'Set password for root: '
+		read rootPw
+		echo -n 'Confirm password for root: '
+		read rootPwConf
+		if [ "$rootPw" = "$rootPwConf" ]; then
+			pass_ok=1
+		else
+			echo
+			echo "Password does not match."
+			echo
 		fi
 	done
-done
+	echo "root:${rootPw}" | chpasswd
+}
 
-echo $'\n\n\n'
 
-if [ -d /usr/share/zoneinfo/$MYREGION ]; then
-	VALID_CITY=0
-	cityArray=$(ls /usr/share/zoneinfo/$MYREGION)
-	while [ $VALID_CITY -eq 0 ]; do
-		ls /usr/share/zoneinfo/$MYREGION/
-		echo $'\n\n\n'
-		echo -n 'ENTER NAME OF CITY, EXACTLY AS IT APPEARS ABOVE: '
-		read MYCITY
-		for city in ${cityArray[@]}; do
-			if [ "$city" = $MYCITY ]; then
-				VALID_CITY=1;
+function set_timezone() {
+	echo "-----------------------"
+	echo "| Locale and Timezone |"
+	echo "-----------------------"
+	
+	# Set locale, symlink to local time
+	echo 
+	echo SETTING LOCALE
+	echo
+	echo 'en_US.UTF-8 UTF-8' >>/etc/locale.gen # How presumptuous of me. It's the 4th of July every day YEAAAAAAHHHHH!!!11!
+	locale-gen
+
+	# Get zoneinfo from user
+	VALID_REGION=0
+	regionArray=$(ls /usr/share/zoneinfo)
+	while [ $VALID_REGION -eq 0 ]; do
+		ls /usr/share/zoneinfo/
+		echo 
+		echo -n 'ENTER NAME OF REGION, EXACTLY AS IT APPEARS ABOVE: '
+		read MYREGION	
+		for region in ${regionArray[@]}; do
+			if [ "$region" = $MYREGION ]; then
+				VALID_REGION=1
 			fi
 		done
 	done
-fi
+	echo
+	
+	if [ -d /usr/share/zoneinfo/$MYREGION ]; then
+		VALID_CITY=0
+		cityArray=$(ls /usr/share/zoneinfo/$MYREGION)
+		while [ $VALID_CITY -eq 0 ]; do
+			ls /usr/share/zoneinfo/$MYREGION/
+			echo $'\n\n\n'
+			echo -n 'ENTER NAME OF CITY, EXACTLY AS IT APPEARS ABOVE: '
+			read MYCITY
+			for city in ${cityArray[@]}; do
+				if [ "$city" = $MYCITY ]; then
+					VALID_CITY=1;
+				fi
+			done
+		done
+	fi
 
-echo $'\n\n\n'
+	# Symlink time zone, sync hardware clock
+	ln -sf /usr/share/zoneinfo/$MYREGION/$MYCITY /etc/localtime
+	hwclock --systohc --utc
 
+	echo
+	echo
+}
 
-# Symlink time zone, sync hardware clock
-echo
-ln -sf /usr/share/zoneinfo/$MYREGION/$MYCITY /etc/localtime
-hwclock --systohc --utc
-echo $'\n\n\n\n'
+function install_packages() {
+	echo "------------------------"
+	echo "| Package Installation |"
+	echo "------------------------"
 
+	# Install yay
+	echo
+	echo "INSTALLING YAY"
+	echo
+	git clone https://aur.archlinux.org/yay.git
+	cd yay
+	makepkg -si
+	wait
+	cd ..
+	rm -rf yay
 
+	# Check video drivers
+	echo "Checking graphics card..."
+	ati=$(lspci | grep VGA | grep ATI)
+	nvidia=$(lspci | grep VGA | grep NVIDIA)
+	intel=$(lspci | grep VGA | grep Intel)
+	amd=$(lspci | grep VGA | grep AMD)
+	
+	if [ ! -z "$ati" ]; then
+	    echo 'Ati graphics detected'
+	    #pacman -S xf86-video-ati
+	    ati="xf86-video-ati"
+	fi
+	if [ ! -z "$nvidia" ]; then
+	    echo 'Nvidia graphics detected'
+	    #pacman -S xf86-video-nouveau
+	    nvidia="xf86-video-nouveau"
+	fi
+	if [ ! -z  "$intel" ]; then
+	    echo 'Intel graphics detected'
+	    #pacman -S xf86-video-intel
+	    intel="xf86-video-intel"
+	fi
+	if [ ! -z  "$amd" ]; then
+	    echo 'AMD graphics detected'
+	    #pacman -S xf86-video-amdgpu
+	    nvidia="xf86-video-amdgpu"
+	fi
 
-
-# Install packages
-echo $'\n'
-echo "Installing packages..."
-echo $'\n'
-# NO NEOFETCH!11!!!1
-pacman -S -y --quiet --noconfirm grub sudo pulseaudio pulseaudio-alsa pavucontrol networkmanager network-manager-applet xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift feh htop vim firefox base-devel bash-completion git acpi zathura zathura-djvu zathura-pdf-mupdf wget dmenu netctl
-
-
-# Install video drivers
-ATI=$(lspci | grep VGA | grep ATI)
-NVIDIA=$(lspci | grep VGA | grep NVIDIA)
-INTEL=$(lspci | grep VGA | grep Intel)
-AMD=$(lspci | grep VGA | grep AMD)
-
-if [ ! -z "$ATI" ]; then
-    echo 'Ati graphics detected'
-    pacman -S xf86-video-ati
-fi
-
-if [ ! -z "$NVIDIA" ]; then
-    echo 'Nvidia graphics detected'
-    pacman -S xf86-video-nouveau
-fi
-
-if [ ! -z  "$INTEL" ]; then
-    echo 'Intel graphics detected'
-    pacman -S xf86-video-intel
-fi
-
-if [ ! -z  "$AMD" ]; then
-    echo 'AMD graphics detected'
-    pacman -S xf86-video-amdgpu
-fi
-
+	# Install packages
+	yay -S -y --quiet --noconfirm bspwm sxhkd polybar grub sudo pulseaudio pulseaudio-alsa pavucontrol networkmanager network-manager-applet xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift feh htop vim firefox base-devel bash-completion git acpi zathura zathura-djvu zathura-pdf-mupdf wget dmenu netctl "$ati" "$nvidia" "$intel" "$amd"
+	echo
+	echo
+}
 
 
 # Install grub
-echo $'\n\n\n\n'
-lsblk -l | grep disk
-echo $'\n\n\n\n'
-echo -n 'Enter disk to install grub to (i.e. sda): '
-read BOOTDISK
-echo $'\n\n\n\n'
-echo $'\n\n\n\n'
-echo "Installing grub..."
-echo $'\n'
-grub-install --target=i386-pc --recheck /dev/$BOOTDISK
-cp /usr/share/locale/en\@quot/LC_MESSAGES/grub.mo /boot/grub/locale/en.mo
-grub-mkconfig -o /boot/grub/grub.cfg
+function install_grub() {
+	echo "---------------------"
+	echo "| Grub Installation |"
+	echo "---------------------"
 
-
+	echo 
+	lsblk -l | grep disk
+	echo 
+	echo -n 'Enter disk to install grub to: '
+	read grub_disk
+	grub-install --target=i386-pc --recheck /dev/$grub_disk
+	grub-mkconfig -o /boot/grub/grub.cfg
+	echo
+}
 
 # Create user, password, change hostname
-echo $'\n\n\n\n'
-echo -n "Enter desired username: "
-read MYUSER
-echo
-useradd -m -G wheel -s /bin/bash $MYUSER
-echo $'\n'
-echo "Enter password for $MYUSER"
-passwd $MYUSER
-echo $'\n\n\n\n'
-echo -n "Enter desired hostname: "
-read MYHOST
-echo $MYHOST >/etc/hostname
-echo $'\n\n\n\n'
+function create_user() {
+	echo "---------------------"
+	echo "| Grub Installation |"
+	echo "---------------------"
+	echo
+	echo -n "Enter desired username: "
+	read user_name
+	echo
+	useradd -m -G wheel -s /bin/bash $user_name
+	echo $'\n'
+	echo "Enter password for $user_name"
+	passwd $user_name
+	echo
+	echo -n "Enter desired hostname: "
+	read host_name
+	echo $host_name > /etc/hostname
+	echo
+	echo
+	
+	# Add user to wheel
+	echo "" >> /etc/sudoers
+	echo "## Allow members of group wheel to execute any command" >> /etc/sudoers
+	echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
+	echo "## Enable password feedback" >> /etc/sudoers
+	echo "Defaults env_reset,pwfeedback" >> /etc/sudoers
 
+}
 
+function clean_up() {
+	# Remove install scripts from root
+	# (Exits chroot.sh - back into install.sh - and reboots from that script)
+	rm /chroot.sh
+}
 
-# Add user to wheel
-echo "## Allow members of group wheel to execute any command" >> /etc/sudoers
-echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
-echo "## Enable password feedback" >> /etc/sudoers
-echo "Defaults env_reset,pwfeedback" >> /etc/sudoers
-
-
-
-# Git dotfiles, copy post-install-notes from root and move dotfiles to users home directory
-echo
-cp post-install-notes /home/$MYUSER/
-rm /post-install-notes
-echo $'\n'
-echo "Downloading dotfile repository..."
-echo $'\n'
-echo "exec i3" >>/home/$MYUSER/.xinitrc
-echo $'\n'
-git clone https://github.com/drblythe/dotfiles
-mv dotfiles /home/$MYUSER/
-cd /home/$MYUSER/dotfiles
-./rice.sh $MYUSER
-cd /home/$MYUSER
-rm -r /home/$MYUSER/dotfiles
-chown -R $MYUSER /home/$MYUSER
-echo $'\n'
-
-
-
-# Remove install scripts from root
-# (Exits chroot.sh - back into install.sh - and reboots from that script)
-rm /chroot.sh
-echo $'\n\n\n\n'
-echo $'\n\n\n\n'
-echo "INSTALLATION COMPLETE! :D"
-echo
-echo "When you log into your user account, there will be an installation-notes file in your home directory. Read it."
-echo
-echo "You may now reboot and remove installation media."
-echo "System will reboot in 10 seconds."
-echo $'\n\n\n\n'
-sleep 10
+set_root_pw
+set_timezone
+install_packages
+install_grub
+create_user
+clean_up
