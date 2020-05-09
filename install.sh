@@ -122,37 +122,41 @@ function filesystem() {
 	fi
 
 	# Wipe disk
-	wipefs --all /dev/$disk_install
+	wipefs --all "/dev/${disk_install}"
+	sync
 
 	# No swap -> Use entire disk for root
 	if [ $swap_size -eq 0 ]; then
 		echo "CREATING ROOT PARTITION WITH FULL DISK..."
+		(echo o; echo n; echo p; echo 1; echo ""; echo ""; sleep 0.5; echo w; echo q) | fdisk /dev/$disk_install
 		root_part="$(lsblk -l | grep $disk_install | grep part | cut -d ' ' -f1 | tail -n 1)"
 		echo "Created root partition on $root_part"
 		echo
-		(echo o; echo n; echo p; echo 1; echo ""; echo ""; sleep 0.5; echo w; echo q) | fdisk /dev/$disk_install
 	# Swap -> Make swap first, then use remaining for root
 	else
 		echo "CREATING SWAP PARTITION [$swap_size MB]..."
-		swap_part="$(lsblk -l | grep $disk_install | grep part | cut -d ' ' -f1 | head -n 1)"
 		echo "CREATING ROOT PARTITION [remaining space]..."
+		(echo o; echo n; echo p; echo 1; echo ""; echo "+${swap_size}M"; echo n; echo p; echo 2; echo ""; echo ""; sleep 0.5; echo w; echo q) | fdisk /dev/$disk_install
+		swap_part="$(lsblk -l | grep $disk_install | grep part | cut -d ' ' -f1 | head -n 1)"
 		root_part="$(lsblk -l | grep $disk_install | grep part | cut -d ' ' -f1 | tail -n 1)"
 		echo
-		(echo o; echo n; echo p; echo 1; echo ""; echo "+${swap_size}M"; echo n; echo p; echo 2; echo ""; echo ""; sleep 0.5; echo w; echo q) | fdisk /dev/$disk_install
 	fi
 
 	echo "MAKING FILESYSTEMS..."
 	if [ $swap_size -ne 0 ]; then
+		echo
 		echo "Swap on partition $swap_part"
-		mkswap /dev/$swap_part
+		echo
+		mkswap -f "/dev/${swap_part}"
+		swapon
 	fi
-	echo "ext4 filesystem on $root_part"
-		mkfs.ext4 /dev/$root_part
 	echo
-
+	echo "ext4 filesystem on $root_part"
+	echo
+	mkfs.ext4 -F "/dev/${root_part}"
+	echo
 	echo "MOUNTING FILESYSTEMS..."
-	mount /dev/$root_part /mnt
-
+	mount "/dev/${root_part}" /mnt
 	echo
 	echo
 }
