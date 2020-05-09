@@ -154,9 +154,10 @@ function install_packages() {
 	wait
 	cd
 	rm -rf "$yaydir"
+	echo "$user_pw" | sudo -Sv; yes | yay -S polybar-git
 
 	# Install packages
-	yay -S -y --quiet --noconfirm bspwm sxhkd polybar grub pulseaudio pulseaudio-alsa pavucontrol networkmanager network-manager-applet xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift feh htop vim firefox base-devel bash-completion git acpi zathura zathura-djvu zathura-pdf-mupdf wget dmenu netctl dialog dhcpcd
+	yay -S -y --quiet --noconfirm bspwm sxhkd grub pulseaudio pulseaudio-alsa pavucontrol networkmanager network-manager-applet xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift feh htop vim firefox base-devel bash-completion git acpi zathura zathura-djvu zathura-pdf-mupdf wget dmenu netctl dialog dhcpcd
 
 	# Check video drivers
 	echo "Checking graphics card..."
