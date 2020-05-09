@@ -17,7 +17,7 @@ function set_root_pw() {
 	while [ $pass_ok -eq 0 ]; do
 		echo
 		echo -n 'Set password for root: '
-		read root_pw_conf
+		read root_pw
 		echo -n 'Confirm password for root: '
 		read root_pw_conf
 		if [ "$root_pw" = "$root_pw_conf" ]; then
@@ -122,18 +122,18 @@ function install_packages() {
 	echo "------------------------"
 	echo
 
-	# Install yay
-	yaydir="/home/$user_name/yay"
-	echo "INSTALLING YAY"
-	echo
-	pacman -S -y --quiet --noconfirm git
-	su "$user_name" -c "git clone https://aur.archlinux.org/yay.git $yaydir"
-	chown -R $user_name $yaydir
-	cd "$yaydir"
-	su "$user_name" -c "makepkg -si"
-	wait
-	cd
-	rm -rf "$yaydir"
+	## Install yay
+	#yaydir="/home/$user_name/yay"
+	#echo "INSTALLING YAY"
+	#echo
+	#pacman -S -y --quiet --noconfirm git
+	#su "$user_name" -c "git clone https://aur.archlinux.org/yay.git $yaydir"
+	#chown -R $user_name $yaydir
+	#cd "$yaydir"
+	#su "$user_name" -c "makepkg -si"
+	#wait
+	#cd
+	#rm -rf "$yaydir"
 
 	# Check video drivers
 	echo "Checking graphics card..."
@@ -164,7 +164,7 @@ function install_packages() {
 	fi
 
 	# Install packages
-	yay -S -y --quiet --noconfirm bspwm sxhkd polybar grub pulseaudio pulseaudio-alsa pavucontrol networkmanager network-manager-applet xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift feh htop vim firefox base-devel bash-completion git acpi zathura zathura-djvu zathura-pdf-mupdf wget dmenu netctl "$ati" "$nvidia" "$intel" "$amd"
+	pacman -S -y --quiet --noconfirm bspwm sxhkd grub pulseaudio pulseaudio-alsa pavucontrol networkmanager network-manager-applet xf86-input-libinput mesa xorg xorg-xinit xorg-xbacklight redshift feh htop vim firefox base-devel bash-completion git acpi zathura zathura-djvu zathura-pdf-mupdf wget dmenu netctl "$ati" "$nvidia" "$intel" "$amd"
 	echo
 	echo
 }
