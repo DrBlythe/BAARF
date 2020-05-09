@@ -101,9 +101,9 @@ function create_user() {
 	pass_ok=0
 	while [ $pass_ok -eq 0 ]; do
 		echo
-		echo -n 'Set password for $user_name: '
+		echo -n "Set password for $user_name: "
 		read user_pw
-		echo -n 'Confirm password for $user_name: '
+		echo -n "Confirm password for $user_name: "
 		read user_pw_conf
 		if [ "$user_pw" = "$user_pw_conf" ]; then
 			pass_ok=1
