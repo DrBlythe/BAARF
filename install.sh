@@ -19,7 +19,7 @@ function get_confirmation() {
 		elif [ "$response" == "n" ] || [ "$response" == "no" ]; then
 			ret=1
 		else
-			echo "Got stones in your ears? It's y/n only."
+			echo -n "Got stones in your ears? It's y/n only: "
 		fi
 	done
 	return $ret
@@ -129,6 +129,8 @@ function filesystem() {
 	if [ $swap_size -eq 0 ]; then
 		echo "CREATING ROOT PARTITION WITH FULL DISK..."
 		(echo o; echo n; echo p; echo 1; echo ""; echo ""; sleep 0.5; echo w; echo q) | fdisk /dev/$disk_install
+		wait
+		sync
 		root_part="$(lsblk -l | grep $disk_install | grep part | cut -d ' ' -f1 | tail -n 1)"
 		echo "Created root partition on $root_part"
 		echo
@@ -137,6 +139,8 @@ function filesystem() {
 		echo "CREATING SWAP PARTITION [$swap_size MB]..."
 		echo "CREATING ROOT PARTITION [remaining space]..."
 		(echo o; echo n; echo p; echo 1; echo ""; echo "+${swap_size}M"; echo n; echo p; echo 2; echo ""; echo ""; sleep 0.5; echo w; echo q) | fdisk /dev/$disk_install
+		wait
+		sync
 		swap_part="$(lsblk -l | grep $disk_install | grep part | cut -d ' ' -f1 | head -n 1)"
 		root_part="$(lsblk -l | grep $disk_install | grep part | cut -d ' ' -f1 | tail -n 1)"
 		echo
@@ -148,7 +152,7 @@ function filesystem() {
 		echo "Swap on partition $swap_part"
 		echo
 		mkswap -f "/dev/${swap_part}"
-		swapon
+		swapon "/dev/${swap_part}"
 	fi
 	echo
 	echo "ext4 filesystem on $root_part"
