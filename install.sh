@@ -7,6 +7,24 @@ swap_size=0
 swap_part=""
 root_part=""
 
+# Get confirmation
+function get_confirmation() {
+	ret=-1
+	echo $1
+	echo -n "Enter y/n to confirm: "
+	while [ $ret -lt 0 ]; do
+		read response
+		if [ "$response" == "y" ] || [ "$response" == "yes" ]; then
+			ret=0
+		elif [ "$response" == "n" ] || [ "$response" == "no" ]; then
+			ret=1
+		else
+			echo "Got stones in your ears? It's y/n only."
+		fi
+	done
+	return $ret
+}
+
 # Check if input is integer
 function check_int() {
 	re='^[0-9]+$'
@@ -94,13 +112,25 @@ function filesystem() {
 	echo ">>> https://wiki.archlinux.org/index.php/Installation_Guide"
 	echo
 
+	get_confirmation "You are about to format and lose everything on disk ${disk_install}."
+	if [ $? -eq 1 ]; then
+		echo
+		echo "Quitting. Nothing written to disk yet."
+		echo "I was just beginning to think we were friends."
+		echo
+		exit 1
+	fi
+
+	# Wipe disk
+	wipefs --all /dev/$disk_install
+
 	# No swap -> Use entire disk for root
 	if [ $swap_size -eq 0 ]; then
 		echo "CREATING ROOT PARTITION WITH FULL DISK..."
 		root_part="$(lsblk -l | grep $disk_install | grep part | cut -d ' ' -f1 | tail -n 1)"
 		echo "Created root partition on $root_part"
 		echo
-		#(echo o; echo n; echo p; echo 1; echo ""; echo ""; sleep 0.5; echo w; echo q) | fdisk /dev/$disk_install
+		(echo o; echo n; echo p; echo 1; echo ""; echo ""; sleep 0.5; echo w; echo q) | fdisk /dev/$disk_install
 	# Swap -> Make swap first, then use remaining for root
 	else
 		echo "CREATING SWAP PARTITION [$swap_size MB]..."
@@ -108,20 +138,20 @@ function filesystem() {
 		echo "CREATING ROOT PARTITION [remaining space]..."
 		root_part="$(lsblk -l | grep $disk_install | grep part | cut -d ' ' -f1 | tail -n 1)"
 		echo
-		#(echo o; echo n; echo p; echo 1; echo ""; echo "+${swap_size}M"; echo n; echo p; echo 2; echo ""; echo ""; sleep 0.5; echo w; echo q) | fdisk /dev/$disk_install
+		(echo o; echo n; echo p; echo 1; echo ""; echo "+${swap_size}M"; echo n; echo p; echo 2; echo ""; echo ""; sleep 0.5; echo w; echo q) | fdisk /dev/$disk_install
 	fi
 
 	echo "MAKING FILESYSTEMS..."
 	if [ $swap_size -ne 0 ]; then
 		echo "Swap on partition $swap_part"
-		# mkswap /dev/$swap_part
+		mkswap /dev/$swap_part
 	fi
 	echo "ext4 filesystem on $root_part"
-		# mkfs.ext4 /dev/$root_part
+		mkfs.ext4 /dev/$root_part
 	echo
 
 	echo "MOUNTING FILESYSTEMS..."
-	# mount /dev/$root_part /mnt
+	mount /dev/$root_part /mnt
 
 	echo
 	echo
@@ -132,13 +162,13 @@ function install_base() {
 	echo -e "| 5. Install Base System | "
 	echo -e "--------------------------"
 	echo
-	#pacstrap -i /mnt base linux linux-firmware
+	pacstrap /mnt base linux linux-firmware
 }
 
 function pre_chroot() {
 	echo "CREATING FSTAB FOR NEW SYSTEM"
-	#genfstab -U /mnt >> /mnt/etc/fstab
-	#cp post-install-notes chroot.sh /mnt
+	genfstab -U /mnt >> /mnt/etc/fstab
+	cp post-install-notes chroot.sh /mnt
 }
 
 function prompt_reboot() {
