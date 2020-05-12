@@ -182,6 +182,24 @@ function install_packages() {
 	    echo 'AMD graphics detected'
 	    yay -S -y --quiet --noconfirm xf86-video-amdgpu
 	fi
+
+	# Install scripts, dotfiles, themes from github
+	git clone https://github.com/cadwalladr/scripts "/home/${user_name}/.scripts"
+	chown -R "/home/${user_name}/.scripts"
+	chgrp -R "/home/${user_name}/.scripts"
+
+	git clone https://github.com/cadwalladr/bspwm-themes "/home/${user_name}/bspwm-themes"
+	chown -R "/home/${user_name}/bspwm-themes"
+	chgrp -R "/home/${user_name}/bspwm-themes"
+	echo "exec bspwm -c ~/.config/bspwm/soren" > "/home/${user_name}/.xinitrc"
+	chmod +x "/home/${user_name}/.xinitrc"
+	chown -R "/home/${user_name}/.xinitrc"
+	chgrp -R "/home/${user_name}/.xinitrc"
+
+	git clone https://github.com/cadwalladr/doot "/home/${user_name}/doot"
+	chown -R "/home/${user_name}/doot"
+	chgrp -R "/home/${user_name}/doot"
+
 	echo
 	echo
 }
