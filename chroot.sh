@@ -185,16 +185,16 @@ function install_packages() {
 
 	# Install scripts, dotfiles, themes from github
 	git clone https://github.com/s3nko/scripts "/home/${user_name}/.scripts"
-	chown -R "/home/${user_name}/.scripts"
-	chgrp -R "/home/${user_name}/.scripts"
+	chown -R ${user_name} "/home/${user_name}/.scripts"
+	chgrp -R ${user_name} "/home/${user_name}/.scripts"
 
 	git clone https://github.com/s3nko/bspwm-themes "/home/${user_name}/bspwm-themes"
-	chown -R "/home/${user_name}/bspwm-themes"
-	chgrp -R "/home/${user_name}/bspwm-themes"
+	chown -R ${user_name} "/home/${user_name}/bspwm-themes"
+	chgrp -R ${user_name} "/home/${user_name}/bspwm-themes"
 	echo "exec bspwm -c ~/.config/bspwm/soren" > "/home/${user_name}/.xinitrc"
 	chmod +x "/home/${user_name}/.xinitrc"
-	chown -R "/home/${user_name}/.xinitrc"
-	chgrp -R "/home/${user_name}/.xinitrc"
+	chown -R ${user_name} "/home/${user_name}/.xinitrc"
+	chgrp -R ${user_name} "/home/${user_name}/.xinitrc"
 
 	git clone https://github.com/s3nko/doot "/home/${user_name}/doot"
 	chown -R "/home/${user_name}/doot"
@@ -202,6 +202,35 @@ function install_packages() {
 
 	echo
 	echo
+
+	# Copy theme files over
+	#mkdir -p  "/home/${user_name}/pic/pape"
+	#cp "/home/${user_name}/bspwm-themes/peachouli/1.png" "/home/${user_name}/pic/pape"
+
+	#mkdir -p "/home/${user_name}/.config/bspwm"
+	#cp  "/home/${user_name}/bspwm-themes/peachouli/bspwm/*"  "/home/${user_name}/.config/bspwm/"
+
+	#mkdir -p "/home/${user_name}/.config/sxhkd"
+	#cp  "/home/${user_name}/bspwm-themes/peachouli/sxhkd/*"  "/home/${user_name}/.config/sxhkd/"
+
+	#mkdir -p "/home/${user_name}/.config/picom"
+	#cp  "/home/${user_name}/bspwm-themes/peachouli/picom/*"  "/home/${user_name}/.config/picom/"
+
+	#mkdir -p "/home/${user_name}/.config/polybar"
+	#cp  "/home/${user_name}/bspwm-themes/peachouli/polybar/*"  "/home/${user_name}/.config/polybar"
+
+	#mkdir -p "/home/${user_name}/.config/Xresources"
+	#cp  "/home/${user_name}/bspwm-themes/peachouli/Xresources/*"  "/home/${user_name}/.config/Xresources"
+
+	#mkdir -p "/home/${user_name}/.config/dunst"
+	#mkdir -p "/home/${user_name}/.config/zathura"
+
+	#cp "/home/${user_name}/bspwm-themes/peachouli/bin/*" "/home/${user_name}/.scripts"
+
+	#mkdir -p "/home/${user_name}/.themes"
+	#mkdir -p "/home/${user_name}/.icons"
+	#cp "/home/${user_name}/bspwm-themes/peachouli/oomox-peachouli/"  "/home/${user_name}/.themes"
+	#cp "/home/${user_name}/bspwm-themes/peachouli/oomox-peachouli-icons/"  "/home/${user_name}/.icons"
 }
 
 
