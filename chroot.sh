@@ -184,11 +184,11 @@ function install_packages() {
 	fi
 
 	# Install scripts, dotfiles, themes from github
-	git clone https://github.com/cadwalladr/scripts "/home/${user_name}/.scripts"
+	git clone https://github.com/s3nko/scripts "/home/${user_name}/.scripts"
 	chown -R "/home/${user_name}/.scripts"
 	chgrp -R "/home/${user_name}/.scripts"
 
-	git clone https://github.com/cadwalladr/bspwm-themes "/home/${user_name}/bspwm-themes"
+	git clone https://github.com/s3nko/bspwm-themes "/home/${user_name}/bspwm-themes"
 	chown -R "/home/${user_name}/bspwm-themes"
 	chgrp -R "/home/${user_name}/bspwm-themes"
 	echo "exec bspwm -c ~/.config/bspwm/soren" > "/home/${user_name}/.xinitrc"
@@ -196,7 +196,7 @@ function install_packages() {
 	chown -R "/home/${user_name}/.xinitrc"
 	chgrp -R "/home/${user_name}/.xinitrc"
 
-	git clone https://github.com/cadwalladr/doot "/home/${user_name}/doot"
+	git clone https://github.com/s3nko/doot "/home/${user_name}/doot"
 	chown -R "/home/${user_name}/doot"
 	chgrp -R "/home/${user_name}/doot"
 
